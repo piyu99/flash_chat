@@ -1,31 +1,48 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
+
+  static const String id='loginScreen';
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  String email;
+  String password;
+  var user=null;
+
+  FirebaseAuth _auth=FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.purpleAccent,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              height: 200.0,
-              child: Image.asset('images/logo.png'),
+            Flexible(
+              child: Hero(
+                tag: 'logo',
+                child: Container(
+                  height: 200.0,
+                  child: Image.asset('images/logo.png'),
+                ),
+              ),
             ),
             SizedBox(
               height: 48.0,
             ),
             TextField(
               onChanged: (value) {
-                //Do something with the user input.
+                email=value;
               },
               decoration: InputDecoration(
                 hintText: 'Enter your email',
@@ -51,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             TextField(
               onChanged: (value) {
-                //Do something with the user input.
+                password=value;
               },
               decoration: InputDecoration(
                 hintText: 'Enter your password.',
@@ -83,7 +100,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 elevation: 5.0,
                 child: MaterialButton(
                   onPressed: () {
-                    //Implement login functionality.
+                    try{
+                      user= _auth.signInWithEmailAndPassword(email: email, password: password);
+                    print('user info :  $user');
+                     if(user!=null) {
+                      Navigator.pushNamed(context, ChatScreen.id);
+                    }
+                    }
+                    catch(e){
+                      print('error is $e');
+                    }
                   },
                   minWidth: 200.0,
                   height: 42.0,
